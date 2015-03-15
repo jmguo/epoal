@@ -1,0 +1,21 @@
+_Multi-Objective Combinatorial Optimization (MOCO)_ explores a finite search space of feasible solutions and finds the optimal ones that balance multiple (often conflicting) objectives simultaneously. MOCO is a fundamental challenge in many design and development problems in engineering and other domains. For example, in mobile-phone system design,
+one often has to choose between different candidate designs that trade off multiple competing _objectives_, such as low cost and high performance. Due to the increasing system complexity, a candidate design (i.e., a feasible solution) involves a wide variety of design options, which we call _features_ (e.g., enabling "Video Calls"),
+with respect to a set of _constraints_ (e.g., "Video Calls" requires "Camera") and
+_quality attributes_ (e.g., the cost of enabling "Video Calls"). This results in a search space that usually grows exponentially in the number of features. Exploring such a huge search space is often beyond human capabilities and makes optimal system design a very challenging task. In the same way, many software-engineering problems, such as architecture design, test data generation, and project planning, involve MOCO problems.
+
+MOCO problems are usually NP-hard. To address them, approximate approaches that depend mainly on _metaheuristics_ have been advocated for years. In most cases, they solve MOCO problems in an acceptable time, but they find only near-optimal solutions, and often suffer from parameter sensitivity (i.e., the accuracy of the found solutions varies widely with the parameter settings of these approaches). In contrast, exact methods that scan all candidate solutions one by one often take too long for large-scale problems, but they are accurate in finding _all_, _exact_ optimal solutions, which is desirable for stakeholders to never miss any optimal opportunity.
+
+Parallel computing carries out multiple calculations simultaneously on multiple processors. It divides a large computing problem into smaller ones and solves them in parallel, which often gains a significant performance improvement. In the past, metaheuristics have been parallelized to address MOCO problems efficiently. However, to the best of our knowledge, there is no parallel algorithm for exact MOCO.
+
+We aim at exact, parallel approaches that solve MOCO problems accurately and efficiently.
+As a baseline, we choose the _Guided Improvement Algorithm (GIA)_,
+a general-purpose, sequential algorithm for exactly solving MOCO problems.
+GIA works with most off-the-shelf SAT (SATisfiability), SMT (Satisfiability Modulo Theories), and CSP (Constraint Satisfaction Problem) solvers. Accordingly, the first parallel algorithm we propose is to perform multiple GIAs simultaneously and collaboratively, which we call _Parallel GIA (ParGIA)_. In ParGIA, each processor runs a GIA with a different starting point in the search space; when a processor finds an optimal solution, it communicates the solution to other processors so as to reduce duplicate searches.
+
+To further scale MOCO, we propose two parallel divide-and-conquer algorithms,
+_Objective Split GIA (OS-GIA)_ and _Feature Split GIA (FS-GIA)_. OS-GIA geometrically divides the search space of a MOCO problem into subspaces, and then runs a GIA in each subspace. FS-GIA recursively partitions a MOCO problem into subproblems by selecting and deselecting certain features, then it performs a GIA for each subproblem. Furthermore, we propose two hybrid parallel algorithms _OS-ParGIA_ and _FS-ParGIA_ by replacing GIA with ParGIA in OS-GIA and FS-GIA.
+
+We implemented our proposed algorithms using Python 2.7 and its multiprocessing package
+
+We evaluated them in a series of experiments on three case studies of software systems design. Our empirical results demonstrate the feasibility and performance of our parallel algorithms. In particular, FS-GIA shows a desirable scalability with the increasing number of available processors,
+and it achieves even super-linear speedups.
